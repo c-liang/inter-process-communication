@@ -10,7 +10,7 @@ Semaphore::~Semaphore() {
 }
 
 auto Semaphore::create() ->HRESULT {
-
+	return E_NOTIMPL;
 }
 
 auto Semaphore::open() -> HRESULT {
@@ -18,6 +18,10 @@ auto Semaphore::open() -> HRESULT {
 }
 
 auto Semaphore::wait() -> HRESULT {
+	return E_NOTIMPL;
+}
+
+auto Semaphore::wait_timeout(const uint32_t timeout) -> HRESULT {
 	return E_NOTIMPL;
 }
 

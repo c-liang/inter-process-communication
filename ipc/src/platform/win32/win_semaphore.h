@@ -10,6 +10,7 @@ public:
 	auto create()->HRESULT;
 	auto open()->HRESULT;
 	auto wait()->HRESULT;
+	auto wait_timeout(const uint32_t timeout)->HRESULT;
 	auto release()->void;
 	auto close()->void;
 private:

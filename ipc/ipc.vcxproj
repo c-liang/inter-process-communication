@@ -26,9 +26,11 @@
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\platform\win32\win_mutex.cpp" />
     <ClCompile Include="src\platform\win32\win_semaphore.cpp" />
+    <ClCompile Include="src\platform\win32\win_shared_memory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\client\ipc_client.h" />
+    <ClInclude Include="src\client\ipc_client_tls.h" />
     <ClInclude Include="src\crc\crc32.h" />
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\message\message_object.h" />
@@ -40,6 +42,7 @@
     <ClInclude Include="src\platform\win32\win_semaphore.h" />
     <ClInclude Include="src\platform\win32\win_shared_memory.h" />
     <ClInclude Include="src\server\ipc_server.h" />
+    <ClInclude Include="src\server\ipc_server_tls.h" />
     <ClInclude Include="src\tls\tls.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

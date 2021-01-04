@@ -14,7 +14,7 @@ public:
 	virtual auto create()->HRESULT override;
 	virtual auto open()->HRESULT override;
 	virtual auto close()->HRESULT override;
-	virtual auto recv_msg(const DWORD timeout, std::vector<std::vector<uint8_t>>& buf_list)->HRESULT override;
+	virtual auto recv_msg(const uint32_t timeout, std::vector<std::vector<uint8_t>>& buf_list)->HRESULT override;
 	virtual auto send_msg(const uint8_t* buf, const uint32_t len)->HRESULT override;
 private:
 	auto peek(

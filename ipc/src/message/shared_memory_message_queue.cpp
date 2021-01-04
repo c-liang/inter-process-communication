@@ -64,7 +64,7 @@ auto SharedMemoryMessageQueue::close() ->HRESULT {
 }
 
 auto SharedMemoryMessageQueue::recv_msg(
-	const DWORD timeout,
+	const uint32_t timeout,
 	std::vector<std::vector<uint8_t>>& buf_list
 )->HRESULT {
 
