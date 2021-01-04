@@ -17,9 +17,6 @@
     <Filter Include="src\server">
       <UniqueIdentifier>{219546ca-ed66-4065-b19b-335c4614a397}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\pch">
-      <UniqueIdentifier>{5753d35a-8661-479f-8000-98fb816f55a2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\tls">
       <UniqueIdentifier>{2e360a11-1598-424e-9ddd-67af819353ad}</UniqueIdentifier>
     </Filter>
@@ -29,57 +26,72 @@
     <Filter Include="src\platform">
       <UniqueIdentifier>{b4768ca1-7d7d-45fd-b752-70fdc28b0744}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\platform\win32">
+      <UniqueIdentifier>{fff5484e-2a0c-4b41-aee1-f07bdc9a14e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\pch.cpp">
-      <Filter>src\pch</Filter>
-    </ClCompile>
     <ClCompile Include="src\ipc.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\crc32.cpp">
+    <ClCompile Include="src\crc\crc32.cpp">
       <Filter>src\crc</Filter>
     </ClCompile>
-    <ClCompile Include="src\message_pipe.cpp">
+    <ClCompile Include="src\platform\win32\win_mutex.cpp">
+      <Filter>src\platform\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\win32\win_semaphore.cpp">
+      <Filter>src\platform\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\message\message_pipe.cpp">
       <Filter>src\message</Filter>
     </ClCompile>
-    <ClCompile Include="src\shared_memory_message_queue.cpp">
+    <ClCompile Include="src\message\shared_memory_message_queue.cpp">
       <Filter>src\message</Filter>
     </ClCompile>
-    <ClCompile Include="src\platform\win_mutex.cpp">
-      <Filter>src\platform</Filter>
+    <ClCompile Include="src\pch.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\message_pipe.h">
+    <ClInclude Include="src\platform\win32\win_mutex.h">
+      <Filter>src\platform\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\win32\win_semaphore.h">
+      <Filter>src\platform\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\win32\win_shared_memory.h">
+      <Filter>src\platform\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="src\message\message_object.h">
       <Filter>src\message</Filter>
     </ClInclude>
-    <ClInclude Include="src\framework.h">
-      <Filter>src\pch</Filter>
+    <ClInclude Include="src\message\message_pipe.h">
+      <Filter>src\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\message\message_queue_traits.h">
+      <Filter>src\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\message\shared_memory_message_queue.h">
+      <Filter>src\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\client\ipc_client.h">
+      <Filter>src\client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\server\ipc_server.h">
+      <Filter>src\server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tls\tls.h">
+      <Filter>src\tls</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h">
-      <Filter>src\pch</Filter>
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\shared_memory_message_queue.h">
-      <Filter>src\message</Filter>
+    <ClInclude Include="src\framework.h">
+      <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\message_object.h">
-      <Filter>src\message</Filter>
-    </ClInclude>
-    <ClInclude Include="src\crc32.h">
+    <ClInclude Include="src\crc\crc32.h">
       <Filter>src\crc</Filter>
-    </ClInclude>
-    <ClInclude Include="src\message_queue_traits.h">
-      <Filter>src\message</Filter>
-    </ClInclude>
-    <ClInclude Include="src\platform\win_shared_memory.h">
-      <Filter>src\platform</Filter>
-    </ClInclude>
-    <ClInclude Include="src\platform\win_mutex.h">
-      <Filter>src\platform</Filter>
-    </ClInclude>
-    <ClInclude Include="src\platform\win_semaphore.h">
-      <Filter>src\platform</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

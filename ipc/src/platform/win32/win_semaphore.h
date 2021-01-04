@@ -5,11 +5,13 @@ _IPC_BEGIN
 
 class Semaphore {
 public:
-	Semaphore(std::string& name);
+	Semaphore(const std::wstring& name);
+	auto create()->HRESULT;
+	auto open()->HRESULT;
 	auto wait()->HRESULT;
 	auto release()->void;
 private:
-	std::string semaphore_name;
+	std::wstring semaphore_name;
 	HANDLE semphore;
 };
 
