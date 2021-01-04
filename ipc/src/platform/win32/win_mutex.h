@@ -11,6 +11,7 @@ public:
 	auto open()->HRESULT;
 	auto lock()->HRESULT;
 	auto unlock()->void;
+	auto close()->void;
 private:
 	std::wstring mutex_name;
 	HANDLE mutex = nullptr;

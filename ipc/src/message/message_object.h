@@ -46,13 +46,15 @@ struct MessageReply {
 };
 
 //pipe messages shared head
-struct PipeCmdHead {
+struct PipeMemoryHead {
 	//how many messages in cur pipe
 	int32_t messages_num;
 	//message position starts
 	uint32_t start_message_pos;
 	//message position end
 	uint32_t end_message_pos;
+	uint32_t memory_total_length;
+	uint32_t memory_remained;
 };
 //head added by message pipe
 struct PipeMessageHead {

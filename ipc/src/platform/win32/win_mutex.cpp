@@ -6,7 +6,7 @@ _IPC_BEGIN
 Mutex::Mutex(const std::wstring& name) :mutex_name(name) {
 }
 Mutex::~Mutex() {
-	CloseHandle(mutex);
+	this->close();
 }
 
 auto Mutex::create() ->HRESULT {
@@ -38,6 +38,13 @@ auto Mutex::lock() ->HRESULT {
 auto Mutex::unlock() ->void
 {
 	ReleaseMutex(mutex);
+}
+
+auto Mutex::close() -> void {
+	if (this->mutex) {
+		CloseHandle(this->mutex);
+		this->mutex = nullptr;
+	}
 }
 
 _IPC_END

@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <cstdint>
+#include <assert.h>
 
 //stream
 #include <iostream>
