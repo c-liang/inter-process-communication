@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{11b5f150-c067-4bbc-9644-f56c8544b38f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\message">
+      <UniqueIdentifier>{4d4195fa-7bfc-4ada-a01a-95b1c6e371af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\client">
+      <UniqueIdentifier>{eadeb89b-8511-49b6-954d-11845b12e598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\server">
+      <UniqueIdentifier>{219546ca-ed66-4065-b19b-335c4614a397}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\pch">
+      <UniqueIdentifier>{5753d35a-8661-479f-8000-98fb816f55a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tls">
+      <UniqueIdentifier>{2e360a11-1598-424e-9ddd-67af819353ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\crc">
+      <UniqueIdentifier>{00d82519-3ae2-49b9-b7ce-1b60119ee3bc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\pch.cpp">
+      <Filter>src\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\crc32.cpp">
+      <Filter>src\crc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\message_pipe.h">
+      <Filter>src\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\framework.h">
+      <Filter>src\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pch.h">
+      <Filter>src\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shared_memory_message_queue.h">
+      <Filter>src\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\message_object.h">
+      <Filter>src\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\crc32.h">
+      <Filter>src\crc</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
