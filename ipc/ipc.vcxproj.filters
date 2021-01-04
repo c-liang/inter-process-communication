@@ -26,6 +26,9 @@
     <Filter Include="src\crc">
       <UniqueIdentifier>{00d82519-3ae2-49b9-b7ce-1b60119ee3bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\platform">
+      <UniqueIdentifier>{b4768ca1-7d7d-45fd-b752-70fdc28b0744}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -36,6 +39,15 @@
     </ClCompile>
     <ClCompile Include="src\crc32.cpp">
       <Filter>src\crc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\message_pipe.cpp">
+      <Filter>src\message</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shared_memory_message_queue.cpp">
+      <Filter>src\message</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\win_mutex.cpp">
+      <Filter>src\platform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +68,18 @@
     </ClInclude>
     <ClInclude Include="src\crc32.h">
       <Filter>src\crc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\message_queue_traits.h">
+      <Filter>src\message</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\win_shared_memory.h">
+      <Filter>src\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\win_mutex.h">
+      <Filter>src\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\win_semaphore.h">
+      <Filter>src\platform</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -18,6 +18,8 @@ private:
 	auto operator= (const SharedMemoryMessageQueue&)->SharedMemoryMessageQueue & = delete;
 private:
 	std::wstring shared_memory_name;
+	HANDLE shared_memory_semaphore = nullptr;
+	HANDLE shared_memory_lock = nullptr;
 };
 
 _IPC_END

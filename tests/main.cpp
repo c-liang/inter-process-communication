@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
 #include "../ipc/src/crc32.h"
+extern auto crc_test()->void;
+
 auto main()->int {
-	std::string s = "abcdefg";
-	std::cout << TinyIPC::crc32((const uint8_t*)s.data(), s.length(), CRC32_INIT) << std::endl;
-	std::cout << TinyIPC::crc32((const uint8_t*)s.data(), s.length(), CRC32_INIT) << std::endl;
+	crc_test();
 	return 0;
 }

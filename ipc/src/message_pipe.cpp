@@ -16,7 +16,7 @@ auto MessagePipe::open() ->HRESULT {
 }
 
 auto MessagePipe::close() ->HRESULT {
-	this->message_queue->close();
+	return this->message_queue->close();
 }
 
 auto MessagePipe::recv_msg() ->void {

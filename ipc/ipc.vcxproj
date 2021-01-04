@@ -21,14 +21,21 @@
   <ItemGroup>
     <ClCompile Include="src\crc32.cpp" />
     <ClCompile Include="src\ipc.cpp" />
+    <ClCompile Include="src\message_pipe.cpp" />
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\platform\win_mutex.cpp" />
+    <ClCompile Include="src\shared_memory_message_queue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\crc32.h" />
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\message_object.h" />
     <ClInclude Include="src\message_pipe.h" />
+    <ClInclude Include="src\message_queue_traits.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\platform\win_mutex.h" />
+    <ClInclude Include="src\platform\win_semaphore.h" />
+    <ClInclude Include="src\platform\win_shared_memory.h" />
     <ClInclude Include="src\shared_memory_message_queue.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -85,15 +92,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>./src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>./src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>./src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>./src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
