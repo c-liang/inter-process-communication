@@ -10,19 +10,7 @@ MessagePipe::MessagePipe(std::wstring const& const pipe_name)
 }
 
 MessagePipe::~MessagePipe() {
-  this->closed = true;
   this->close();
-  send_cv.notify_all();
-
-  if (this->send_thread.joinable()) {
-    this->send_thread.join();
-  }
-  if (this->recv_thread.joinable()) {
-    this->recv_thread.join();
-  }
-  if (this->heartbeat_thread.joinable()) {
-    this->heartbeat_thread.join();
-  }
 }
 
 auto MessagePipe::create() -> HRESULT {
@@ -46,6 +34,17 @@ auto MessagePipe::open() -> HRESULT {
 
 auto MessagePipe::close() -> HRESULT {
   this->closed = true;
+  send_cv.notify_all();
+
+  if (this->send_thread.joinable()) {
+    this->send_thread.join();
+  }
+  if (this->recv_thread.joinable()) {
+    this->recv_thread.join();
+  }
+  if (this->heartbeat_thread.joinable()) {
+    this->heartbeat_thread.join();
+  }
   return this->message_queue->close();
 }
 

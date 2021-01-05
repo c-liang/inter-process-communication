@@ -11,6 +11,10 @@ SharedMemoryMessageQueue::SharedMemoryMessageQueue(std::wstring const& name)
       mutex(name + L"_mutex"),
       shared_memory(name + L"_memory") {}
 
+SharedMemoryMessageQueue::~SharedMemoryMessageQueue() {
+  this->close();
+}
+
 auto SharedMemoryMessageQueue::create() -> HRESULT {
   HRESULT hr = S_OK;
   do {

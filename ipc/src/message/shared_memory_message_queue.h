@@ -11,6 +11,7 @@ _IPC_BEGIN
 class SharedMemoryMessageQueue : public MessageQueueTrait {
  public:
   SharedMemoryMessageQueue(std::wstring const& name);
+  ~SharedMemoryMessageQueue();
   virtual auto create() -> HRESULT override;
   virtual auto open() -> HRESULT override;
   virtual auto close() -> HRESULT override;

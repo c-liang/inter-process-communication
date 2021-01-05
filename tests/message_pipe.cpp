@@ -10,6 +10,7 @@ void send() {
   for (auto i = 0; i < 1000000; ++i) {
     pipe.send_msg(msg.data(), msg.size());
   }
+  pipe.close();
   Sleep(5000);
   SetEvent(QUIT_EVENT);
 }
@@ -17,6 +18,7 @@ void recv() {
   TinyIPC::MessagePipe pipe(name);
   pipe.create();
   WaitForSingleObject(QUIT_EVENT, 1000000);
+  pipe.close();
 }
 
 void message_pipe_test() {
