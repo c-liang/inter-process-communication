@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="crc.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="message_pipe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ipc\ipc.vcxproj">
