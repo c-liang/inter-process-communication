@@ -3,7 +3,7 @@
 _IPC_BEGIN
 
 
-SharedMemory::SharedMemory(const std::wstring name, uint32_t len) :
+SharedMemory::SharedMemory(std::wstring const& const name, uint32_t len) :
 	shared_memory_name(name),
 	shared_memory_len(len) {
 }

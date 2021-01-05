@@ -5,7 +5,7 @@ _IPC_BEGIN
 class MutexLockGuard;
 class Mutex {
 public:
-	Mutex(const std::wstring& name);
+	Mutex(std::wstring const& const name);
 	~Mutex();
 	auto create()->HRESULT;
 	auto open()->HRESULT;

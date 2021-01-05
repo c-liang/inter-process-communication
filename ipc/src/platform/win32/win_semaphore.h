@@ -5,7 +5,7 @@ _IPC_BEGIN
 
 class Semaphore {
 public:
-	Semaphore(const std::wstring& name);
+	Semaphore(std::wstring const& const name);
 	~Semaphore();
 	auto create()->HRESULT;
 	auto open()->HRESULT;

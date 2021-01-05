@@ -4,7 +4,7 @@
 #include "shared_memory_message_queue.h"
 
 _IPC_BEGIN
-SharedMemoryMessageQueue::SharedMemoryMessageQueue(const std::wstring& name) :
+SharedMemoryMessageQueue::SharedMemoryMessageQueue(std::wstring const& name) :
 	message_queue_name(name),
 	semaphore(name + L"_semaphore"),
 	mutex(name + L"_mutex"),
@@ -79,7 +79,7 @@ auto SharedMemoryMessageQueue::send_msg(
 	HRESULT hr = S_OK;
 	do {
 		MutexLockGuard l(this->mutex);
-		PipeMemoryHead* head = (PipeMemoryHead*)shared_memory.ptr();
+		PipeMemoryHead* const head = (PipeMemoryHead*)shared_memory.ptr();
 		if (head->memory_remained < (len + sizeof(PipeMessageHead))) {
 			hr = ERROR_DS_USER_BUFFER_TO_SMALL;
 			break;
@@ -88,7 +88,7 @@ auto SharedMemoryMessageQueue::send_msg(
 		msg_head.magic = MAGIC_HEAD_NUM;
 		msg_head.body_crc = crc32(buf, len, CRC32_INIT);
 		msg_head.body_len = len;
-		//push head first, withou increase message number
+		//push head first, without increase message number
 		this->push(head, (uint8_t*)&msg_head, sizeof(msg_head), false);
 		//push body second
 		this->push(head, buf, len, true);
@@ -98,10 +98,10 @@ auto SharedMemoryMessageQueue::send_msg(
 }
 
 auto SharedMemoryMessageQueue::peek(
-	PipeMemoryHead* ptr,
-	uint8_t* out_buf,
-	const uint32_t len,
-	const bool dec_message_num
+	PipeMemoryHead* const ptr,
+	uint8_t* const out_buf,
+	uint32_t const len,
+	bool const dec_message_num
 )->void {
 	assert(ptr->messages_num, "pipe message is empty");
 	if (dec_message_num) {
@@ -111,8 +111,8 @@ auto SharedMemoryMessageQueue::peek(
 }
 
 auto SharedMemoryMessageQueue::push(
-	PipeMemoryHead* ptr,
-	const uint8_t* buf,
+	PipeMemoryHead* const ptr,
+	const uint8_t* const buf,
 	const uint32_t len,
 	const bool inc_message_num
 ) -> void {
@@ -121,9 +121,9 @@ auto SharedMemoryMessageQueue::push(
 		//处理循环情况
 		uint32_t first_len = ptr->memory_total_length - ptr->end_message_pos;
 		memcpy((uint8_t*)ptr + ptr->end_message_pos, buf, first_len);
-		buf += first_len;
+		const auto second_buf = buf + first_len;
 		const uint32_t second_len = len - first_len;
-		memcpy((uint8_t*)ptr + sizeof(PipeMemoryHead), buf, second_len);
+		memcpy((uint8_t*)ptr + sizeof(PipeMemoryHead), second_buf, second_len);
 		ptr->end_message_pos = sizeof(PipeMemoryHead) + second_len;
 	}
 	else {

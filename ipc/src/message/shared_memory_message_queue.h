@@ -10,7 +10,7 @@ _IPC_BEGIN
 
 class SharedMemoryMessageQueue : public MessageQueueTrait {
 public:
-	SharedMemoryMessageQueue(const std::wstring& name);
+	SharedMemoryMessageQueue(std::wstring const& name);
 	virtual auto create()->HRESULT override;
 	virtual auto open()->HRESULT override;
 	virtual auto close()->HRESULT override;
@@ -18,14 +18,14 @@ public:
 	virtual auto send_msg(const uint8_t* buf, const uint32_t len)->HRESULT override;
 private:
 	auto peek(
-		PipeMemoryHead* ptr,
-		uint8_t* out_buf,
-		const uint32_t len,
-		const bool dec_message_num
+		PipeMemoryHead* const ptr,
+		uint8_t* const out_buf,
+		uint32_t const len,
+		bool const dec_message_num
 	)->void;
 	auto push(
-		PipeMemoryHead* ptr,
-		const uint8_t* buf,
+		PipeMemoryHead* const ptr,
+		const uint8_t* const buf,
 		const uint32_t len,
 		const bool inc_message_num
 	)->void;

@@ -2,7 +2,7 @@
 #include "win_semaphore.h"
 _IPC_BEGIN
 
-Semaphore::Semaphore(const std::wstring& name) {
+Semaphore::Semaphore(std::wstring const& const name) {
 }
 
 Semaphore::~Semaphore() {

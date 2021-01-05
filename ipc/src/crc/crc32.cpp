@@ -61,7 +61,7 @@ static const uint32_t CRC_TABLE[1][256] = {
 };
 
 
-auto crc32(const uint8_t* buf, size_t len, uint32_t init)->uint32_t {
+auto crc32(const uint8_t* buf, size_t len, const uint32_t init)->uint32_t {
 	uint32_t crc = init;
 	while (len--)
 	{

@@ -3,7 +3,7 @@
 
 _IPC_BEGIN
 
-Mutex::Mutex(const std::wstring& name) :mutex_name(name) {
+Mutex::Mutex(std::wstring const& const name) :mutex_name(name) {
 }
 Mutex::~Mutex() {
 	this->close();

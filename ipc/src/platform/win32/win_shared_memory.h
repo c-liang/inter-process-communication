@@ -4,7 +4,7 @@ _IPC_BEGIN
 
 class SharedMemory {
 public:
-	SharedMemory(const std::wstring name, uint32_t len = _IPC_SHARED_MEM_LEN);
+	SharedMemory(std::wstring const& const name, uint32_t len = _IPC_SHARED_MEM_LEN);
 	~SharedMemory();
 	auto create()->HRESULT;
 	auto open()->HRESULT;

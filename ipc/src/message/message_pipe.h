@@ -7,7 +7,7 @@ _IPC_BEGIN
 class SharedMemoryMessageQueue;
 class MessagePipe {
 public:
-	MessagePipe(std::wstring& pipe_name);
+	MessagePipe(std::wstring const& const pipe_name);
 	~MessagePipe();
 	auto create()->HRESULT;
 	auto open()->HRESULT;

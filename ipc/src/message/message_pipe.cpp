@@ -3,7 +3,7 @@
 #include "shared_memory_message_queue.h"
 _IPC_BEGIN
 
-MessagePipe::MessagePipe(std::wstring& pipe_name) {
+MessagePipe::MessagePipe(std::wstring const& const pipe_name) {
 	this->message_queue = std::make_unique<SharedMemoryMessageQueue>(this->pipe_name);
 }
 
