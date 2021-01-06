@@ -14,6 +14,7 @@ class SharedMemoryMessageQueue : public MessageQueueTrait {
   ~SharedMemoryMessageQueue();
   virtual auto create() -> HRESULT override;
   virtual auto open() -> HRESULT override;
+  virtual auto pre_close() -> HRESULT override;
   virtual auto close() -> HRESULT override;
   virtual auto recv_msg(const uint32_t timeout,
                         std::vector<std::vector<uint8_t>>& const buf_list)

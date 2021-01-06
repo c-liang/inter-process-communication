@@ -63,6 +63,11 @@ auto SharedMemoryMessageQueue::open() -> HRESULT {
   return hr;
 }
 
+auto SharedMemoryMessageQueue::pre_close() -> HRESULT {
+  semaphore.release();
+  return S_OK;
+}
+
 auto SharedMemoryMessageQueue::close() -> HRESULT {
   semaphore.close();
   mutex.close();
@@ -74,6 +79,10 @@ auto SharedMemoryMessageQueue::recv_msg(
     const uint32_t timeout,
     std::vector<std::vector<uint8_t>>& const buf_list) -> HRESULT {
   HRESULT hr = S_OK;
+  if (FAILED(this->semaphore.wait_timeout(timeout))) {
+    return HRESULT_FROM_WIN32(ERROR_TIMEOUT);
+  }
+
   do {
     MutexLockGuard l(this->mutex, timeout);
     if (!l.locked()) {
@@ -93,12 +102,13 @@ auto SharedMemoryMessageQueue::recv_msg(
       std::vector<uint8_t> data;
       data.resize(msg_head.body_len);
       this->peek(head, data.data(), (uint32_t)data.size(), true);
-      if (msg_head.body_crc != 0 &&
-          msg_head.body_crc != crc32(data.data(), data.size(), CRC32_INIT)) {
+#ifdef _IPC_CHECK_CRC
+      if (msg_head.body_crc != crc32(data.data(), data.size(), CRC32_INIT)) {
         // crc check error
         // todo!
         continue;
       }
+#endif
       buf_list.push_back(std::move(data));
     }
 
@@ -118,12 +128,17 @@ auto SharedMemoryMessageQueue::send_msg(const uint8_t* const buf,
     }
     PipeMessageHead msg_head;
     msg_head.magic = MAGIC_HEAD_NUM;
+#ifdef _IPC_CHECK_CRC
     msg_head.body_crc = crc32(buf, len, CRC32_INIT);
+#else
+    msg_head.body_crc = 0;
+#endif
     msg_head.body_len = len;
     // push head first, without increase message number
     this->push(head, (uint8_t*)&msg_head, sizeof(msg_head), false);
     // push body second
     this->push(head, buf, len, true);
+    this->semaphore.release();
   } while (false);
 
   return hr;

@@ -4,15 +4,20 @@
 
 _IPC_BEGIN
 
-class SharedMemoryMessageQueue;
 class MessagePipe {
+ public:
+  class RecvCallback {
+   public:
+    virtual ~RecvCallback() {}
+    virtual void received(uint8_t* data, uint32_t len){};
+  };
+
  public:
   MessagePipe(std::wstring const& const pipe_name);
   ~MessagePipe();
-  auto create() -> HRESULT;
+  auto create(RecvCallback* callback) -> HRESULT;
   auto open() -> HRESULT;
   auto close() -> HRESULT;
-  auto recv_msg() -> void;
   auto send_msg(const uint8_t* buf, const uint32_t len) -> void;
 
  private:
@@ -22,8 +27,8 @@ class MessagePipe {
 
  private:
   std::atomic<bool> closed = false;
+  std::atomic<RecvCallback*> recv_callback = nullptr;
   std::wstring pipe_name;
-  std::thread heartbeat_thread;
   std::thread recv_thread;
   std::thread send_thread;
   std::condition_variable send_cv;

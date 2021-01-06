@@ -1,22 +1,32 @@
 #include "../ipc/src/message/message_pipe.h"
+
 static const wchar_t* name = L"test123456";
 static HANDLE QUIT_EVENT = nullptr;
 void send() {
   TinyIPC::MessagePipe pipe(name);
   pipe.open();
-  std::vector<uint8_t> msg{'a', 'b', 'c', 'd', 'a', 'b', 'c',
-                           'd', 'a', 'b', 'c', 'd', '\0'};
-  msg.resize(1024);
-  for (auto i = 0; i < 1000000; ++i) {
-    pipe.send_msg(msg.data(), msg.size());
+
+  for (auto i = 0; i < 10000; ++i) {
+    std::string msg =
+        "hello world ello world ello world ello world " + std::to_string(i);
+    pipe.send_msg((const uint8_t*)msg.data(), msg.size() + 1);
   }
   pipe.close();
   Sleep(5000);
   SetEvent(QUIT_EVENT);
 }
+
+class MsgRecv : public TinyIPC::MessagePipe::RecvCallback {
+  void received(uint8_t* data, uint32_t len) override {
+    std::string s;
+    s.append((char*)data, len);
+    std::cout << s << std::endl;
+  }
+};
 void recv() {
   TinyIPC::MessagePipe pipe(name);
-  pipe.create();
+  MsgRecv recv;
+  pipe.create(&recv);
   WaitForSingleObject(QUIT_EVENT, 1000000);
   pipe.close();
 }

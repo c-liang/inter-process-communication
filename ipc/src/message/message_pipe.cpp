@@ -1,4 +1,5 @@
 #include "message_pipe.h"
+
 #include "pch.h"
 #include "shared_memory_message_queue.h"
 _IPC_BEGIN
@@ -13,13 +14,13 @@ MessagePipe::~MessagePipe() {
   this->close();
 }
 
-auto MessagePipe::create() -> HRESULT {
+auto MessagePipe::create(RecvCallback* callback) -> HRESULT {
   HRESULT hr = this->message_queue->create();
   if (FAILED(hr)) {
     return hr;
   }
-  this->send_thread = std::thread(&MessagePipe::recv_loop, this);
-  // this->heartbeat_thread = std::thread(&MessagePipe::heartbeat_loop, this);
+  this->recv_callback.store(callback);
+  this->recv_thread = std::thread(&MessagePipe::recv_loop, this);
   return hr;
 }
 
@@ -35,20 +36,15 @@ auto MessagePipe::open() -> HRESULT {
 auto MessagePipe::close() -> HRESULT {
   this->closed = true;
   send_cv.notify_all();
-
+  this->message_queue->pre_close();
   if (this->send_thread.joinable()) {
     this->send_thread.join();
   }
   if (this->recv_thread.joinable()) {
     this->recv_thread.join();
   }
-  if (this->heartbeat_thread.joinable()) {
-    this->heartbeat_thread.join();
-  }
   return this->message_queue->close();
 }
-
-auto MessagePipe::recv_msg() -> void {}
 
 auto MessagePipe::send_msg(const uint8_t* buf, const uint32_t len) -> void {
   {
@@ -63,6 +59,15 @@ auto MessagePipe::send_msg(const uint8_t* buf, const uint32_t len) -> void {
 
 auto MessagePipe::send_loop() -> void {
   for (;;) {
+    if (this->closed) {
+      //最后发送一次
+      std::lock_guard<std::mutex> l(this->send_mutex);
+      for (auto&& v : this->send_queue) {
+        this->message_queue->send_msg(v.data(), v.size());
+      }
+      this->send_queue.clear();
+      break;
+    }
     std::vector<std::vector<uint8_t>> to_send;
     {
       std::unique_lock<std::mutex> l(this->send_mutex);
@@ -70,14 +75,12 @@ auto MessagePipe::send_loop() -> void {
         return this->closed || !this->send_queue.empty() ||
                !this->pending_message.empty();
       });
+
       to_send.swap(pending_message);
       for (auto&& v : this->send_queue) {
         to_send.push_back(std::move(v));
       }
       this->send_queue.clear();
-    }
-    if (this->closed) {
-      break;
     }
     for (auto&& v : to_send) {
       //发送失败加入错误队列
@@ -91,9 +94,15 @@ auto MessagePipe::send_loop() -> void {
 auto MessagePipe::recv_loop() -> void {
   for (;;) {
     std::vector<std::vector<uint8_t>> msgs;
-    this->message_queue->recv_msg(2 * 1000, msgs);
+    this->message_queue->recv_msg(10 * 1000, msgs);
     if (this->closed) {
       break;
+    }
+    auto callback = recv_callback.load();
+    if (callback) {
+      for (auto& msg : msgs) {
+        callback->received(msg.data(), msg.size());
+      }
     }
   }
 }
