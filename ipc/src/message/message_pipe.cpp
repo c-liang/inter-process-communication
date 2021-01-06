@@ -14,13 +14,18 @@ MessagePipe::~MessagePipe() {
   this->close();
 }
 
-auto MessagePipe::create(RecvCallback* callback) -> HRESULT {
+auto MessagePipe::create(MessagePipe::RecvCallback* callback) -> HRESULT {
   HRESULT hr = this->message_queue->create();
   if (FAILED(hr)) {
     return hr;
   }
   this->recv_callback.store(callback);
   this->recv_thread = std::thread(&MessagePipe::recv_loop, this);
+
+#ifdef _IPC_MSG_HEANLD_THREAD
+  this->handle_msg_thread = std::thread(&MessagePipe::handle_msg_loop, this);
+#endif
+
   return hr;
 }
 
@@ -43,6 +48,14 @@ auto MessagePipe::close() -> HRESULT {
   if (this->recv_thread.joinable()) {
     this->recv_thread.join();
   }
+
+#ifdef _IPC_MSG_HEANLD_THREAD
+  this->recv_msg_cv.notify_all();
+  if (this->handle_msg_thread.joinable()) {
+    this->handle_msg_thread.join();
+  }
+#endif  // _IPC_MSG_HEANLD_THREAD
+
   return this->message_queue->close();
 }
 
@@ -85,7 +98,12 @@ auto MessagePipe::send_loop() -> void {
     for (auto&& v : to_send) {
       //发送失败加入错误队列
       if (FAILED(this->message_queue->send_msg(v.data(), v.size()))) {
-        this->pending_message.push_back(std::move(v));
+        if (this->pending_message.size() < _IPC_MAX_PENDING_MESSAGE) {
+          this->pending_message.push_back(std::move(v));
+        } else {
+          // discard
+          // todo!
+        }
       }
     }
   }
@@ -93,20 +111,52 @@ auto MessagePipe::send_loop() -> void {
 
 auto MessagePipe::recv_loop() -> void {
   for (;;) {
-    std::vector<std::vector<uint8_t>> msgs;
-    this->message_queue->recv_msg(10 * 1000, msgs);
     if (this->closed) {
       break;
     }
+
+    std::vector<std::vector<uint8_t>> msgs;
+    this->message_queue->recv_msg(10 * 1000, msgs);
+
+#ifdef _IPC_MSG_HEANLD_THREAD
+    if (!msgs.empty()) {
+      std::lock_guard<std::mutex> l(this->recv_msg_mutex);
+      for (auto&& v : msgs) {
+        this->recv_msg_queue.push_back(std::move(v));
+      }
+      this->recv_msg_cv.notify_all();
+    }
+#else
     auto callback = recv_callback.load();
     if (callback) {
       for (auto& msg : msgs) {
         callback->received(msg.data(), msg.size());
       }
     }
+#endif  // _IPC_MSG_HEANLD_THREAD
   }
 }
-
-auto MessagePipe::heartbeat_loop() -> void {}
+#ifdef _IPC_MSG_HEANLD_THREAD
+auto MessagePipe::handle_msg_loop() -> void {
+  for (;;) {
+    if (this->closed) {
+      break;
+    }
+    std::vector<std::vector<uint8_t>> recv_msg;
+    {
+      std::unique_lock<std::mutex> l(this->recv_msg_mutex);
+      this->recv_msg_cv.wait(
+          l, [this] { return this->closed || !this->recv_msg_queue.empty(); });
+      recv_msg.swap(this->recv_msg_queue);
+    }
+    auto callback = recv_callback.load();
+    if (callback) {
+      for (auto& msg : recv_msg) {
+        callback->received(msg.data(), msg.size());
+      }
+    }
+  }
+}
+#endif
 
 _IPC_END

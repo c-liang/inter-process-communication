@@ -77,8 +77,8 @@ auto SharedMemoryMessageQueue::close() -> HRESULT {
 }
 
 auto SharedMemoryMessageQueue::recv_msg(
-    const uint32_t timeout,
-    std::vector<std::vector<uint8_t>>& const buf_list) -> HRESULT {
+    const u32 timeout,
+    std::vector<std::vector<u8>>& const buf_list) -> HRESULT {
   HRESULT hr = S_OK;
   if (FAILED(this->semaphore.wait_timeout(timeout))) {
     return HRESULT_FROM_WIN32(ERROR_TIMEOUT);
@@ -96,20 +96,30 @@ auto SharedMemoryMessageQueue::recv_msg(
       hr = HRESULT_FROM_WIN32(ERROR_EMPTY);
       break;
     }
-    for (; head->messages_num > 0;) {
+    int32_t message_nums = head->messages_num;
+    for (auto i = 0; i < message_nums; ++i) {
       PipeMessageHead msg_head;
       // peek msg head information
-      this->peek(head, (uint8_t*)&msg_head, sizeof(msg_head), false);
-      if (msg_head.magic != MAGIC_HEAD_NUM) {
-        DebugBreak();
-      }
-      std::vector<uint8_t> data;
+      this->peek(head, (u8*)&msg_head, sizeof(msg_head), false);
+      // body content
+      std::vector<u8> data;
       data.resize(msg_head.body_len);
-      this->peek(head, data.data(), (uint32_t)data.size(), true);
+      this->peek(head, data.data(), (u32)data.size(), true);
+
+      if (msg_head.magic != MAGIC_HEAD_NUM) {
+        // todo!
+#ifdef _DEBUG
+        DebugBreak();
+#endif
+        continue;
+      }
 #ifdef _IPC_CHECK_CRC
       if (msg_head.body_crc != crc32(data.data(), data.size(), CRC32_INIT)) {
-        // crc check error
-        // todo!
+// crc check error
+// todo!
+#ifdef _DEBUG
+        DebugBreak();
+#endif
         continue;
       }
 #endif
@@ -120,8 +130,8 @@ auto SharedMemoryMessageQueue::recv_msg(
   return S_OK;
 }
 
-auto SharedMemoryMessageQueue::send_msg(const uint8_t* const buf,
-                                        uint32_t const len) -> HRESULT {
+auto SharedMemoryMessageQueue::send_msg(const u8* const buf, u32 const len)
+    -> HRESULT {
   HRESULT hr = S_OK;
   do {
     {
@@ -155,8 +165,8 @@ auto SharedMemoryMessageQueue::send_msg(const uint8_t* const buf,
 }
 
 auto SharedMemoryMessageQueue::peek(PipeMemoryHead* const ptr,
-                                    uint8_t* const out_buf,
-                                    uint32_t const len,
+                                    u8* const out_buf,
+                                    u32 const len,
                                     bool const dec_message_num) -> void {
   assert(ptr->messages_num > 0, "pipe message is empty");
   if (ptr->start_message_pos + len > ptr->memory_total_length) {
@@ -180,22 +190,22 @@ auto SharedMemoryMessageQueue::peek(PipeMemoryHead* const ptr,
 }
 
 auto SharedMemoryMessageQueue::push(PipeMemoryHead* const ptr,
-                                    const uint8_t* const buf,
-                                    const uint32_t len,
+                                    const u8* const buf,
+                                    const u32 len,
                                     const bool inc_message_num) -> void {
   assert(len <= ptr->memory_remained, "remained buffer too small");
   if (ptr->end_message_pos + len > ptr->memory_total_length) {
     //处理循环情况
     //拷贝第一小段数据到
-    uint32_t first_len = ptr->memory_total_length - ptr->end_message_pos;
-    memcpy((uint8_t*)ptr + ptr->end_message_pos, buf, first_len);
+    u32 first_len = ptr->memory_total_length - ptr->end_message_pos;
+    memcpy((u8*)ptr + ptr->end_message_pos, buf, first_len);
     const auto second_buf = buf + first_len;
-    const uint32_t second_len = len - first_len;
-    memcpy((uint8_t*)ptr + sizeof(PipeMemoryHead), second_buf, second_len);
+    const u32 second_len = len - first_len;
+    memcpy((u8*)ptr + sizeof(PipeMemoryHead), second_buf, second_len);
     ptr->end_message_pos = sizeof(PipeMemoryHead) + second_len;
   } else {
     //有足够的空间，直接拷贝数据
-    memcpy((uint8_t*)ptr + ptr->end_message_pos, buf, len);
+    memcpy((u8*)ptr + ptr->end_message_pos, buf, len);
     ptr->end_message_pos += len;
   }
 

@@ -31,6 +31,7 @@
   <ItemGroup>
     <ClInclude Include="src\client\ipc_client.h" />
     <ClInclude Include="src\client\ipc_client_tls.h" />
+    <ClInclude Include="src\config.h" />
     <ClInclude Include="src\crc\crc32.h" />
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\message\message_object.h" />

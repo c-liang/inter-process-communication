@@ -102,5 +102,8 @@
     <ClInclude Include="src\client\ipc_client_tls.h">
       <Filter>src\client</Filter>
     </ClInclude>
+    <ClInclude Include="src\config.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

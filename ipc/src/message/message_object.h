@@ -38,30 +38,30 @@ struct MessageSend {
 
 struct MessageReply {
   // which peer replied this message
-  int64_t fromPeer;
+  u64 fromPeer;
   // reply message from witch
-  int64_t fromId;
+  u64 fromId;
   std::vector<int8_t> data;
 };
 
 // pipe messages shared head
 struct PipeMemoryHead {
   // version
-  uint32_t version;
+  u32 version;
   // how many messages in cur pipe
-  int32_t messages_num;
+  u32 messages_num;
   // message position starts
-  uint32_t start_message_pos;
+  u32 start_message_pos;
   // message position end
-  uint32_t end_message_pos;
-  uint32_t memory_total_length;
-  uint32_t memory_remained;
+  u32 end_message_pos;
+  u32 memory_total_length;
+  u32 memory_remained;
 };
 // head added by message pipe
 struct PipeMessageHead {
-  uint32_t magic;
-  uint32_t body_crc;
-  uint32_t body_len;
+  u32 magic;
+  u32 body_crc;
+  u32 body_len;
 };
 
 #pragma pack(pop)

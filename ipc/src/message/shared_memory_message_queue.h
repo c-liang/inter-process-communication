@@ -16,20 +16,19 @@ class SharedMemoryMessageQueue : public MessageQueueTrait {
   virtual auto open() -> HRESULT override;
   virtual auto pre_close() -> HRESULT override;
   virtual auto close() -> HRESULT override;
-  virtual auto recv_msg(const uint32_t timeout,
-                        std::vector<std::vector<uint8_t>>& const buf_list)
+  virtual auto recv_msg(const u32 timeout,
+                        std::vector<std::vector<u8>>& const buf_list)
       -> HRESULT override;
-  virtual auto send_msg(const uint8_t* const buf, uint32_t const len)
-      -> HRESULT override;
+  virtual auto send_msg(const u8* const buf, u32 const len) -> HRESULT override;
 
  private:
   auto peek(PipeMemoryHead* const ptr,
-            uint8_t* const out_buf,
-            uint32_t const len,
+            u8* const out_buf,
+            u32 const len,
             bool const dec_message_num) -> void;
   auto push(PipeMemoryHead* const ptr,
-            const uint8_t* const buf,
-            uint32_t const len,
+            const u8* const buf,
+            u32 const len,
             const bool inc_message_num) -> void;
 
  private:

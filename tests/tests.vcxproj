@@ -146,6 +146,7 @@
     <ClCompile Include="crc.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="message_pipe.cpp" />
+    <ClCompile Include="serialization.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ipc\ipc.vcxproj">

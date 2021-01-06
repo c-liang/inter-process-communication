@@ -20,20 +20,19 @@
 #include <mutex>
 #include <thread>
 
-#define _IPC_BEGIN namespace TinyIPC {
-#define _IPC_END }
-#define _IPC ::TinyIPC::
+#ifdef _WIN32
+#endif
 
-#define _IPC_MESSAGE_PACKING 4
+#include "config.h"
 
-// shared memory default size 8M
-
-#define _IPC_SHARED_MEM_LEN 1024 * 1024 * 8
-
-#define _IPC_SEMAPHORE_MAX 32
-//#define _IPC_CHECK_CRC
-// crc32 init num
-static constexpr uint32_t CRC32_INIT = 0x6315749;
-
-// 1.1
-static constexpr uint32_t IPC_VERSION = 1 << 16 | 1;
+// define types as rust
+using i8 = int8_t;
+using u8 = uint8_t;
+using i16 = int16_t;
+using u16 = uint16_t;
+using i32 = int32_t;
+using u32 = uint32_t;
+using i64 = int64_t;
+using u64 = uint64_t;
+using f64 = double;
+using f32 = float;
