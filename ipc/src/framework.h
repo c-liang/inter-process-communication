@@ -26,9 +26,9 @@
 
 #define _IPC_MESSAGE_PACKING 4
 
-// shared memory default size 16M
+// shared memory default size 8M
 
-#define _IPC_SHARED_MEM_LEN 1024
+#define _IPC_SHARED_MEM_LEN 1024 * 1024 * 8
 
 #define _IPC_SEMAPHORE_MAX 32
 //#define _IPC_CHECK_CRC

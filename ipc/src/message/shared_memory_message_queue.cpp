@@ -39,7 +39,8 @@ auto SharedMemoryMessageQueue::create() -> HRESULT {
   head->messages_num = 0;
   head->start_message_pos = sizeof(PipeMemoryHead);
   head->end_message_pos = sizeof(PipeMemoryHead);
-  head->memory_total_length = shared_memory.length() - sizeof(PipeMemoryHead);
+  head->memory_total_length = shared_memory.length();
+  //剩余存放数据的空间，不包含头部空间
   head->memory_remained = shared_memory.length() - sizeof(PipeMemoryHead);
   return hr;
 }
@@ -99,6 +100,9 @@ auto SharedMemoryMessageQueue::recv_msg(
       PipeMessageHead msg_head;
       // peek msg head information
       this->peek(head, (uint8_t*)&msg_head, sizeof(msg_head), false);
+      if (msg_head.magic != MAGIC_HEAD_NUM) {
+        DebugBreak();
+      }
       std::vector<uint8_t> data;
       data.resize(msg_head.body_len);
       this->peek(head, data.data(), (uint32_t)data.size(), true);
@@ -120,24 +124,30 @@ auto SharedMemoryMessageQueue::send_msg(const uint8_t* const buf,
                                         uint32_t const len) -> HRESULT {
   HRESULT hr = S_OK;
   do {
-    MutexLockGuard l(this->mutex);
-    PipeMemoryHead* const head = (PipeMemoryHead*)shared_memory.ptr();
-    if (head->memory_remained < (len + sizeof(PipeMessageHead))) {
-      hr = HRESULT_FROM_WIN32(ERROR_DS_USER_BUFFER_TO_SMALL);
-      break;
-    }
-    PipeMessageHead msg_head;
-    msg_head.magic = MAGIC_HEAD_NUM;
+    {
+      MutexLockGuard l(this->mutex);
+      if (!l.locked()) {
+        hr = HRESULT_FROM_WIN32(ERROR_LOCK_FAILED);
+        break;
+      }
+      PipeMemoryHead* const head = (PipeMemoryHead*)shared_memory.ptr();
+      if (head->memory_remained < (len + sizeof(PipeMessageHead))) {
+        hr = HRESULT_FROM_WIN32(ERROR_DS_USER_BUFFER_TO_SMALL);
+        break;
+      }
+      PipeMessageHead msg_head;
+      msg_head.magic = MAGIC_HEAD_NUM;
 #ifdef _IPC_CHECK_CRC
-    msg_head.body_crc = crc32(buf, len, CRC32_INIT);
+      msg_head.body_crc = crc32(buf, len, CRC32_INIT);
 #else
-    msg_head.body_crc = 0;
+      msg_head.body_crc = 0;
 #endif
-    msg_head.body_len = len;
-    // push head first, without increase message number
-    this->push(head, (uint8_t*)&msg_head, sizeof(msg_head), false);
-    // push body second
-    this->push(head, buf, len, true);
+      msg_head.body_len = len;
+      // push head first, without increase message number
+      this->push(head, (uint8_t*)&msg_head, sizeof(msg_head), false);
+      // push body second
+      this->push(head, buf, len, true);
+    }
     this->semaphore.release();
   } while (false);
 
