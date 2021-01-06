@@ -6,9 +6,8 @@ void send() {
   TinyIPC::MessagePipe pipe(name);
   pipe.open();
 
-  for (auto i = 0; i < 10000; ++i) {
-    std::string msg =
-        "hello world ello world ello world ello world " + std::to_string(i);
+  for (auto i = 0; i < 100000; ++i) {
+    std::string msg = "hello world " + std::to_string(i);
     pipe.send_msg((const uint8_t*)msg.data(), msg.size() + 1);
   }
   pipe.close();
@@ -18,9 +17,10 @@ void send() {
 
 class MsgRecv : public TinyIPC::MessagePipe::RecvCallback {
   void received(uint8_t* data, uint32_t len) override {
+    static int32_t num = 0;
     std::string s;
     s.append((char*)data, len);
-    std::cout << s << std::endl;
+    std::cout << s << " num: " << num++ << std::endl;
   }
 };
 void recv() {
